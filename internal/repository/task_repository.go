@@ -117,7 +117,13 @@ FROM tasks
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+
+		}
+	}(rows)
 
 	var tasks []*models.Task
 	for rows.Next() {

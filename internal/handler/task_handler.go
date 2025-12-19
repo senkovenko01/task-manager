@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -64,7 +65,14 @@ func (h *TaskHandler) handleCreateTask(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, ErrMsgMethodNotAllowed, http.StatusMethodNotAllowed)
 		return
 	}
-	defer r.Body.Close()
+
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(r.Body)
+
 	var createInput models.CreateTaskInput
 	if err := json.NewDecoder(r.Body).Decode(&createInput); err != nil {
 		http.Error(w, ErrMsgInvalidJSON, http.StatusBadRequest)
@@ -165,7 +173,14 @@ func (h *TaskHandler) handleUpdateTask(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, ErrMsgInvalidID, http.StatusBadRequest)
 		return
 	}
-	defer r.Body.Close()
+
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(r.Body)
+
 	var updateInput models.UpdateTaskInput
 	if err := json.NewDecoder(r.Body).Decode(&updateInput); err != nil {
 		http.Error(w, ErrMsgInvalidJSON, http.StatusBadRequest)

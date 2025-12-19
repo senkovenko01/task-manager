@@ -26,7 +26,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("open db: %v", err)
 	}
-	defer db.Close()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+
+		}
+	}(db)
 
 	if err := migrations.Run(db); err != nil {
 		log.Fatalf("migrate: %v", err)
