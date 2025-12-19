@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  task-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: task-manager
+    ports:
+      - "8080:8080"
+    environment:
+      - TASK_MANAGER_ADDR=:8080
+      - TASK_MANAGER_SQLITE_PATH=/app/data/tasks.db
+      - SEED_DATA=true
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
